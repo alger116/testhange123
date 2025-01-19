@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riigihanke Andmed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px; /* Increase max-width for better layout */
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input, select, button {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        #saveToExcel, #generatePDF {
+            background-color: #28a745;
+        }
+        #saveToExcel:hover, #generatePDF:hover {
+            background-color: #218838;
+        }
+        .nav {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .nav button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .nav button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #f9f9f9; /* Light background for table */
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff; /* Blue background for table headers */
+            color: #fff; /* White text for table headers */
+            padding: 10px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd; /* Light border for table rows */
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2; /* Alternate row color */
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+        .edit-button {
+            background-color: #ffc107;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .edit-button:hover {
+            background-color: #e0a800;
+        }
+        .clear-button {
+            background-color: #ffc107;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .clear-button:hover {
+            background-color: #e0a800;
+        }
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        .dark-mode .container {
+            background-color: #1e1e1e;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+        .dark-mode input, .dark-mode select, .dark-mode button {
+            background-color: #333;
+            color: #e0e0e0;
+            border: 1px solid #555;
+        }
+        .dark-mode button {
+            background-color: #007bff;
+        }
+        .dark-mode button:hover {
+            background-color: #0056b3;
+        }
+        .dark-mode th {
+            background-color: #007bff;
+        }
+        .dark-mode td {
+            background-color: #2e2e2e;
+        }
+        .dark-mode tr:nth-child(even) {
+            background-color: #3a3a3a;
+        }
+        .dark-mode .delete-button {
+            background-color: #dc3545;
+        }
+        .dark-mode .delete-button:hover {
+            background-color: #c82333;
+        }
+        .dark-mode .edit-button {
+            background-color: #ffc107;
+        }
+        .dark-mode .edit-button:hover {
+            background-color: #e0a800;
+        }
+        .dark-mode .clear-button {
+            background-color: #ffc107;
+        }
+        .dark-mode .clear-button:hover {
+            background-color: #e0a800;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            body {
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                padding: 10px;
+            }
+            .container {
+                width: 100%;
+                max-width: none;
+                padding: 10px;
+            }
+            .nav {
+                position: static;
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 10px;
+            }
+            .nav button {
+                flex: 1;
+                margin: 0 5px;
+            }
+            table, th, td {
+                font-size: 14px;
+            }
+            th, td {
+                padding: 5px;
+            }
+            button {
+                padding: 8px;
+                font-size: 14px;
+            }
+            input, select {
+                padding: 8px;
+                font-size: 14px;
+            }
+            .clear-button {
+                padding: 8px;
+                font-size: 14px;
+            }
+            #toggleDarkMode {
+                bottom: 20px;
+                left: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <button id="showForm" aria-label="Show Form">Tööriist</button>
+        <button id="showSavedSearches" aria-label="Show Saved Searches">Hanked</button>
+    </div>
+    <div class="container" id="formContainer">
+        <h2>Sisesta andmed</h2>
+        <form id="procurementForm">
+            <label for="name">Nimi:</label>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="cost">Maksumus:</label>
+            <input type="number" id="cost" name="cost" required><br><br>
+            <label for="procedureType">Menetluse Tüüp:</label>
+            <select id="procedureType" name="procedureType" required>
+                <option value="Lihthankemenetlus asjade hankelepingu sõlmimiseks">Lihthankemenetlus asjade hankelepingu sõlmimiseks</option>
+                <option value="Lihthankemenetlus teenuste hankelepingu sõlmimiseks">Lihthankemenetlus teenuste hankelepingu sõlmimiseks</option>
+                <option value="Lihthankemenetlus ehitustööde hankelepingu sõlmimiseks">Lihthankemenetlus ehitustööde hankelepingu sõlmimiseks</option>
+                <option value="Avatud hankemenetlus asjade hankelepingu sõlmimiseks">Avatud hankemenetlus asjade hankelepingu sõlmimiseks</option>
+                <option value="Avatud hankemenetlus teenuste hankelepingu sõlmimiseks">Avatud hankemenetlus teenuste hankelepingu sõlmimiseks</option>
+                <option value="Avatud hankemenetlus ehitustööde hankelepingu sõlmimiseks">Avatud hankemenetlus ehitustööde hankelepingu sõlmimiseks</option>
+                <option value="Piiratud hankemenetlus teenuste hankelepingu sõlmimiseks">Piiratud hankemenetlus teenuste hankelepingu sõlmimiseks</option>
+                <option value="Piiratud hankemenetlus asjade hankelepingu sõlmimiseks">Piiratud hankemenetlus asjade hankelepingu sõlmimiseks</option>
+                <option value="Piiratud hankemenetlus ehitustööde hankelepingu sõlmimiseks">Piiratud hankemenetlus ehitustööde hankelepingu sõlmimiseks</option>
+                <option value="Konkurentsipõhine läbirääkimistega hankemenetlus asjade hankelepingu sõlmimiseks">Konkurentsipõhine läbirääkimistega hankemenetlus asjade hankelepingu sõlmimiseks</option>
+                <option value="Konkurentsipõhine läbirääkimistega hankemenetlus teenuste hankelepingu sõlmimiseks">Konkurentsipõhine läbirääkimistega hankemenetlus teenuste hankelepingu sõlmimiseks</option>
+                <option value="Konkurentsipõhine läbirääkimistega hankemenetlus ehitustööde hankelepingu sõlmimiseks">Konkurentsipõhine läbirääkimistega hankemenetlus ehitustööde hankelepingu sõlmimiseks</option>
+                <option value="Innovatsioonipartnerlus asjade hankelepingu sõlmimiseks">Innovatsioonipartnerlus asjade hankelepingu sõlmimiseks</option>
+                <option value="Innovatsioonipartnerlus teenuste hankelepingu sõlmimiseks">Innovatsioonipartnerlus teenuste hankelepingu sõlmimiseks</option>
+                <option value="Võistlev dialoog asjade hankelepingu sõlmimiseks">Võistlev dialoog asjade hankelepingu sõlmimiseks</option>
+                <option value="Võistlev dialoog teenuste hankelepingu sõlmimiseks">Võistlev dialoog teenuste hankelepingu sõlmimiseks</option>
+                <option value="Võistlev dialoog ehitustööde hankelepingu sõlmimiseks">Võistlev dialoog ehitustööde hankelepingu sõlmimiseks</option>
+                <option value="Innovatsioonipartnerlus ehitustööde hankelepingu sõlmimiseks">Innovatsioonipartnerlus ehitustööde hankelepingu sõlmimiseks</option>
+                <option value="Kontsessioonimenetlus koos eraldi taotluse esitamisega">Kontsessioonimenetlus koos eraldi taotluse esitamisega</option>
+                <option value="Kontsessioonimenetlus ilma eraldi taotlust esitamata">Kontsessioonimenetlus ilma eraldi taotlust esitamata</option>
+                <option value="Sotsiaalteenuste erimenetlus">Sotsiaalteenuste erimenetlus</option>
+                <option value="Eriteenuste erimenetlus">Eriteenuste erimenetlus</option>
+            </select><br><br>
+            <label for="contractSigningDate">Lepingu Allkirjastamise Kuupäev:</label>
+            <input type="date" id="contractSigningDate" name="contractSigningDate" required><br><br>
+            <button type="submit">Arvuta menetlusaeg</button>
+        </form>
+
+        <div id="result"></div>
+        <button id="clearFields" class="clear-button">Puhasta väljad</button>
+    </div>
+
+    <div class="container hidden" id="savedSearchesContainer">
+        <h2>Salvestatud Hanked</h2>
+        <table role="table">
+            <thead>
+                <tr>
+                    <th role="columnheader">Nimi</th>
+                    <th role="columnheader">Menetluse Tüüp</th>
+                    <th role="columnheader">Maksumus</th>
+                    <th role="columnheader">Menetlusele kuluv aeg</th>
+                    <th role="columnheader">Riigihanke Taotluse Esitamise Kuupäev</th>
+                    <th role="columnheader">Muuda</th>
+                    <th role="columnheader">Kustuta</th>
+                </tr>
+            </thead>
+            <tbody id="savedSearchesTableBody">
+                <!-- Saved searches will be inserted here -->
+            </tbody>
+        </table>
+        <button id="saveToExcel">Salvesta Excelisse</button>
+    </div>
+    <button id="toggleDarkMode" style="position: absolute; bottom: 10px; left: 10px;">Toggle Dark Mode</button>
+    <script>
+        const procedureData = {
+            "Lihthankemenetlus asjade hankelepingu sõlmimiseks": { taotlusteAeg: 0, pakkumusteAeg: 10, piirmäär: 60000 },
+            "Lihthankemenetlus teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 0, pakkumusteAeg: 10, piirmäär: 60000 },
+            "Lihthankemenetlus ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 0, pakkumusteAeg: 15, piirmäär: 150000 },
+            "Avatud hankemenetlus asjade hankelepingu sõlmimiseks": { taotlusteAeg: 0, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Avatud hankemenetlus teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 0, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Avatud hankemenetlus ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 0, pakkumusteAeg: 15, piirmäär: 150000 },
+            "Piiratud hankemenetlus teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Piiratud hankemenetlus asjade hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Piiratud hankemenetlus ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 15, piirmäär: 150000 },
+            "Konkurentsipõhine läbirääkimistega hankemenetlus asjade hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Konkurentsipõhine läbirääkimistega hankemenetlus teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Konkurentsipõhine läbirääkimistega hankemenetlus ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 25, piirmäär: 150000 },
+            "Innovatsioonipartnerlus asjade hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Innovatsioonipartnerlus teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Võistlev dialoog asjade hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Võistlev dialoog teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 15, piirmäär: 60000 },
+            "Võistlev dialoog ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 25, piirmäär: 150000 },
+            "Innovatsioonipartnerlus ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 15, pakkumusteAeg: 25, piirmäär: 150000 },
+            "Kontsessioonimenetlus koos eraldi taotluse esitamisega": { taotlusteAeg: 30, pakkumusteAeg: 17, piirmäär: 300000 },
+            "Kontsessioonimenetlus ilma eraldi taotlust esitamata": { taotlusteAeg: 0, pakkumusteAeg: 30, piirmäär: 300000 },
+            "Sotsiaalteenuste erimenetlus": { taotlusteAeg: 0, pakkumusteAeg: 10, piirmäär: 300000 },
+            "Eriteenuste erimenetlus": { taotlusteAeg: 0, pakkumusteAeg: 10, piirmäär: 60000 }
+        };
+
+        const internationalProcedureData = {
+            "Avatud hankemenetlus asjade hankelepingu sõlmimiseks": { taotlusteAeg: 0, pakkumusteAeg: 30, piirmäär: 143000 },
+            "Avatud hankemenetlus teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 0, pakkumusteAeg: 30, piirmäär: 143000 },
+            "Avatud hankemenetlus ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 0, pakkumusteAeg: 45, piirmäär: 5538000 },
+            "Piiratud hankemenetlus teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 143000 },
+            "Piiratud hankemenetlus asjade hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 143000 },
+            "Piiratud hankemenetlus ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 5538000 },
+            "Konkurentsipõhine läbirääkimistega hankemenetlus asjade hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 143000 },
+            "Konkurentsipõhine läbirääkimistega hankemenetlus teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 143000 },
+            "Konkurentsipõhine läbirääkimistega hankemenetlus ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 5538000 },
+            "Innovatsioonipartnerlus asjade hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 143000 },
+            "Innovatsioonipartnerlus teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 143000 },
+            "Innovatsioonipartnerlus ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 5538000 },
+            "Võistlev dialoog asjade hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 143000 },
+            "Võistlev dialoog teenuste hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 143000 },
+            "Võistlev dialoog ehitustööde hankelepingu sõlmimiseks": { taotlusteAeg: 30, pakkumusteAeg: 25, piirmäär: 5538000 },
+            "Kontsessioonimenetlus koos eraldi taotluse esitamisega": { taotlusteAeg: 30, pakkumusteAeg: 17, piirmäär: 5538000 },
+            "Kontsessioonimenetlus ilma eraldi taotlust esitamata": { taotlusteAeg: 0, pakkumusteAeg: 30, piirmäär: 5538000 },
+            "Sotsiaalteenuste erimenetlus": { taotlusteAeg: 0, pakkumusteAeg: 10, piirmäär: 750000 },
+            "Eriteenuste erimenetlus": { taotlusteAeg: 0, pakkumusteAeg: 10, piirmäär: 750000 }
+        };
+
+        class PublicProcurement {
+            constructor(name, cost, procedureType, contractSigningDate) {
+                this.name = name;
+                this.cost = cost;
+                this.procedureType = procedureType;
+                this.contractSigningDate = new Date(contractSigningDate);
+                this.procedureDuration = this.calculateProcedureDuration();
+                this.procedureDetails = this.calculateProcedureDetails();
+                this.requestSubmissionDate = this.calculateRequestSubmissionDate();
+            }
+
+            calculateProcedureDuration() {
+                const internationalThreshold = 300000; // International threshold
+                const procedure = procedureData[this.procedureType];
+                const internationalProcedure = internationalProcedureData[this.procedureType];
+
+                if (this.cost > internationalThreshold) {
+                    if (this.cost > internationalProcedure.piirmäär) {
+                        return internationalProcedure.taotlusteAeg + internationalProcedure.pakkumusteAeg + 30; // Adding 10 days for "Hanke alusdokumentide koostamine"
+                    } else {
+                        return 50; // Default international deadline + 10 days for "Hanke alusdokumentide koostamine"
+                    }
+                } else {
+                    return procedure.taotlusteAeg + procedure.pakkumusteAeg + 30; // National deadline + 10 days for "Hanke alusdokumentide koostamine"
+                }
+            }
+
+            calculateProcedureDetails() {
+                const procedure = procedureData[this.procedureType];
+                const internationalProcedure = internationalProcedureData[this.procedureType];
+                let taotlusteAeg, pakkumusteAeg;
+
+                if (this.cost > 300000 && this.cost > internationalProcedure.piirmäär) {
+                    taotlusteAeg = internationalProcedure.taotlusteAeg;
+                    pakkumusteAeg = internationalProcedure.pakkumusteAeg;
+                } else {
+                    taotlusteAeg = procedure.taotlusteAeg;
+                    pakkumusteAeg = procedure.pakkumusteAeg;
+                }
+
+                const details = [
+                    { step: "Hanke alusdokumentide koostamine", days: "kuni 10 tööpäeva (Tegu on indikatiivse ajaga, mis kulub hankekeskusel peale riigihanke taotluse töösse võtmist riigihanke alusdokumentide koostamisele, sealhulgas tehnilise kirjelduse ja taotluse läbitöötamine, dokumentide kooskõlastamine õigusnõuniku ja tellijaga.)" },
+                    { step: "Taotluste esitamine RHRis", days: taotlusteAeg ? `${taotlusteAeg} päeva` : "Ei kohaldu antud menetluses." },
+                    { step: "Pakkumuste esitamine RHRis", days: pakkumusteAeg ? `${pakkumusteAeg} päeva` : "Ei kohaldu antud menetluses." },
+                    { step: "Pakkumuste hindamine 1", days: "3 päeva" },
+                    { step: "Otsus 1", days: "2 päeva" },
+                    { step: "Pakkujate hindamine 2", days: "3 päeva" },
+                    { step: "Otsus 2", days: "2 päeva" },
+                    { step: "Ootaeg", days: "10 päeva" }
+                ];
+                return details;
+            }
+
+            calculateRequestSubmissionDate() {
+                const submissionDate = new Date(this.contractSigningDate);
+                submissionDate.setDate(submissionDate.getDate() - this.procedureDuration);
+                return submissionDate.toISOString().split('T')[0]; // Return date in YYYY-MM-DD format
+            }
+
+            generateHTML() {
+                const detailsHTML = this.procedureDetails.map(detail => `
+                    <li>${detail.step}: ${detail.days}</li>
+                `).join('');
+
+                const errorMessage = new Date(this.requestSubmissionDate) < new Date() ? 
+                    '<p class="error-message">NB! Oled hiljaks jäänud, palun tutvu menetlusele kuluva ajaga ja korrigeeri lepingu sõlmimise kuupäeva</p>' : '';
+
+                return `
+                    <div>
+                        <h2>Riigihanke Andmed</h2>
+                        <p><strong>Riigihanke Taotluse Esitamise Kuupäev:</strong> ${this.requestSubmissionDate}</p>
+                        ${errorMessage}
+                        <p><strong>Nimi:</strong> ${this.name}</p>
+                        <p><strong>Maksumus:</strong> ${this.cost}</p>
+                        <p><strong>Menetluse Tüüp:</strong> ${this.procedureType}</p>
+                        <p><strong>Lepingu Allkirjastamise Kuupäev:</strong> ${this.contractSigningDate.toISOString().split('T')[0]}</p>
+                        <p><strong>Menetlusele kuluv aeg:</strong> ${this.procedureDuration} päeva</p>
+                        <ul>
+                            ${detailsHTML}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            generateTableRow(index) {
+                return `
+                    <tr>
+                        <td>${this.name}</td>
+                        <td>${this.procedureType}</td>
+                        <td>${this.cost}</td>
+                        <td>${this.procedureDuration} päeva</td>
+                        <td>${this.requestSubmissionDate}</td>
+                        <td><button class="edit-button" onclick="editSearch(${index})">Muuda</button></td>
+                        <td><button class="delete-button" onclick="deleteSearch(${index})">Kustuta</button></td>
+                    </tr>
+                `;
+            }
+        }
+
+        const savedSearches = [];
+
+        document.getElementById('procurementForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const cost = document.getElementById('cost').value;
+            const procedureType = document.getElementById('procedureType').value;
+            const contractSigningDate = document.getElementById('contractSigningDate').value;
+
+            const procurement = new PublicProcurement(name, cost, procedureType, contractSigningDate);
+            document.getElementById('result').innerHTML = procurement.generateHTML();
+
+            if (savedSearches.length < 15) {
+                savedSearches.push(procurement);
+                updateSavedSearchesTable();
+            } else {
+                alert("Maksimaalne salvestatud otsingute arv on 15.");
+            }
+        });
+
+        document.getElementById('clearFields').addEventListener('click', function() {
+            document.getElementById('procurementForm').reset();
+            document.getElementById('result').innerHTML = '';
+        });
+
+        document.getElementById('saveToExcel').addEventListener('click', function() {
+            if (savedSearches.length === 0) {
+                alert("Salvestatud otsinguid ei ole.");
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Nimi,Maksumus,Menetluse Tüüp,Lepingu Allkirjastamise Kuupäev,Menetlusele kuluv aeg\n";
+
+            savedSearches.forEach(procurement => {
+                const row = [
+                    procurement.name,
+                    procurement.cost,
+                    procurement.procedureType,
+                    procurement.contractSigningDate.toDateString(),
+                    procurement.procedureDuration
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "riigihanke_andmed.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        document.getElementById('showForm').addEventListener('click', function() {
+            document.getElementById('formContainer').classList.remove('hidden');
+            document.getElementById('savedSearchesContainer').classList.add('hidden');
+        });
+
+        document.getElementById('showSavedSearches').addEventListener('click', function() {
+            document.getElementById('formContainer').classList.add('hidden');
+            document.getElementById('savedSearchesContainer').classList.remove('hidden');
+        });
+
+        function updateSavedSearchesTable() {
+            const tableBody = document.getElementById('savedSearchesTableBody');
+            tableBody.innerHTML = '';
+            savedSearches.forEach((procurement, index) => {
+                tableBody.innerHTML += procurement.generateTableRow(index);
+            });
+        }
+
+        function deleteSearch(index) {
+            savedSearches.splice(index, 1);
+            updateSavedSearchesTable();
+        }
+
+        function editSearch(index) {
+            const procurement = savedSearches[index];
+            document.getElementById('name').value = procurement.name;
+            document.getElementById('cost').value = procurement.cost;
+            document.getElementById('procedureType').value = procurement.procedureType;
+            document.getElementById('contractSigningDate').value = procurement.contractSigningDate.toISOString().split('T')[0];
+            deleteSearch(index);
+            document.getElementById('formContainer').classList.remove('hidden');
+            document.getElementById('savedSearchesContainer').classList.add('hidden');
+        }
+
+        document.getElementById('toggleDarkMode').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+        });
+    </script>
+</body>
+</html>
